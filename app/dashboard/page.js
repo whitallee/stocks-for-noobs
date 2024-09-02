@@ -8,7 +8,7 @@ export default function Dashboard() {
   const [stockName, setStockName] = useState("");
   const [displayedStock, setDisplayedStock] = useState("");
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   return (
     <Box height="100vh" width="100vw" display="flex" alignItems="flex-start">
@@ -24,7 +24,7 @@ export default function Dashboard() {
         <Typography
           fontSize="42px"
           textAlign="center"
-          //   border="2px solid red"
+        //   border="2px solid red"
         >
           Portfolio Holdings
         </Typography>
@@ -98,7 +98,7 @@ export default function Dashboard() {
               textAlign="center"
               maxWidth="50%"
             >
-              Sorry... we don't know that one. Please search for a stock!
+              Sorry... we don&apos;t know that one. Please search for a stock!
             </Typography>
           </Box>
         )}
