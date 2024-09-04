@@ -3,12 +3,29 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import StockInterface from "../components/stock-interface";
+import {
+  mockCompanyDetails,
+  mockHistoricalData,
+  mockSearchResults,
+} from "../constants/mock";
+
 
 export default function Dashboard() {
-  const [stockName, setStockName] = useState("");
+  const [input, setInput] = useState("");
   const [displayedStock, setDisplayedStock] = useState("");
+  const [matches, setMatches] = useState(mockSearchResults.result);
 
-  const handleSearch = () => { };
+  const [data, setData] = useState(mockHistoricalData);
+  const [filter, setFilter] = useState("1W")
+
+  const clear = () => {
+    setInput("");
+    setMatches([]);
+  };
+
+  const updateMatches = () => {
+    setMatches(mockSearchResults.result);
+  };
 
   return (
     <Box height="100vh" width="100vw" display="flex" alignItems="flex-start">
@@ -24,7 +41,8 @@ export default function Dashboard() {
         <Typography
           fontSize="42px"
           textAlign="center"
-        //   border="2px solid red"
+          className="custom-font"
+          //   border="2px solid red"
         >
           Portfolio Holdings
         </Typography>
@@ -45,13 +63,13 @@ export default function Dashboard() {
           display="flex"
           gap="24px"
           //   border="2px solid red"
-          width="85%"
-          margin="0 auto"
-          marginTop="24px"
+          width="90%"
+          margin="24px"
+          marginBottom="0px"
         >
           <input
             type="text"
-            value={stockName}
+            value={input}
             style={{
               width: "100%",
               padding: "16px",
@@ -61,30 +79,78 @@ export default function Dashboard() {
               boxShadow: "0px 0px 5px 0px",
             }}
             placeholder="Type the name of a company..."
-            onChange={(e) => setStockName(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key == "Enter") {
+                setDisplayedStock(input);
+                updateMatches();
+                clear();
+              }
+            }}
           />
           <Button
             variant="contained"
-            sx={{ backgroundColor: "#023020" }}
+            sx={{ backgroundColor: "#023020", borderRadius: "8px" }}
+            className="custom-font"
             onClick={() => {
-              setDisplayedStock(stockName);
-              setStockName("");
+              setDisplayedStock(input);
+              clear();
             }}
           >
             Search
           </Button>
+          {input && matches.length > 0 ? (
+            <ul
+              style={{
+                position: "absolute",
+                top: 100,
+                width: "50%",
+                borderRadius: "8px",
+                height: "300px",
+                overflowY: "scroll",
+                backgroundColor: "white",
+                boxShadow: "0px 0px 5px 0px",
+              }}
+              className="scrollbar"
+            >
+              {matches.map((match) => {
+                return (
+                  <li
+                    key={match.symbol}
+                    style={{
+                      cursor: "pointer",
+                      padding: "24px",
+                      margin: "12px",
+                      display: "flex",
+                      borderRadius: "8px",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                    className="hover:bg-green-200"
+                  >
+                    <span>{match.symbol}</span>
+                    <span>{match.description}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
         </Box>
         {displayedStock ? (
-          <StockInterface stockName={displayedStock} />
+          <StockInterface
+            stockName={displayedStock}
+            givenDetails={mockCompanyDetails}
+            chartData={mockHistoricalData}
+          />
         ) : (
           <Box
             border="none"
             borderRadius="24px"
             boxShadow="0px 0px 10px 0px"
             minWidth="300px"
-            width="85%"
+            width="90%"
             flex="1"
-            margin="24px auto"
+            margin="24px"
             padding="16px"
             display="flex"
             flexDirection="column"
@@ -97,6 +163,7 @@ export default function Dashboard() {
               color="rgba(0,0,0,.7)"
               textAlign="center"
               maxWidth="50%"
+              className="custom-font"
             >
               Sorry... we don&apos;t know that one. Please search for a stock!
             </Typography>
