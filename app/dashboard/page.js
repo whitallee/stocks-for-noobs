@@ -8,7 +8,6 @@ export default function Dashboard() {
   const [input, setInput] = useState("");
   const [displayedStock, setDisplayedStock] = useState("");
   const [matches, setMatches] = useState(mockSearchResults.result);
-  const [filter, setFilter] = useState("1W");
 
   const clear = () => {
     setInput("");
