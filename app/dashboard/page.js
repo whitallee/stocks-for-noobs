@@ -1,22 +1,14 @@
 "use client";
 
-import { Box, Button, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import StockInterface from "../components/stock-interface";
-import {
-  mockCompanyDetails,
-  mockHistoricalData,
-  mockSearchResults,
-} from "../constants/mock";
-
+import { mockCompanyDetails, mockHistoricalData, mockSearchResults } from "../constants/mock";
 
 export default function Dashboard() {
   const [input, setInput] = useState("");
   const [displayedStock, setDisplayedStock] = useState("");
   const [matches, setMatches] = useState(mockSearchResults.result);
-
-  const [data, setData] = useState(mockHistoricalData);
-  const [filter, setFilter] = useState("1W")
+  const [filter, setFilter] = useState("1W");
 
   const clear = () => {
     setInput("");
@@ -28,114 +20,59 @@ export default function Dashboard() {
   };
 
   return (
-    <Box height="100vh" width="100vw" display="flex" alignItems="flex-start">
-      <Box
-        height="100vh"
-        maxWidth="300px"
-        bgcolor="#023020"
-        color="white"
-        padding="24px"
-        display="flex"
-        flexDirection="column"
-      >
-        <Typography
-          fontSize="42px"
-          textAlign="center"
-          className="custom-font"
-          //   border="2px solid red"
-        >
-          Portfolio Holdings
-        </Typography>
-        <Stack
-          //   border="2px solid red"
-          flex="1"
-        ></Stack>
-      </Box>
-      <Box
-        minWidth="300px"
-        height="100vh"
-        flex="1"
-        // border="2px solid red"
-        display="flex"
-        flexDirection="column"
-      >
-        <Box
-          display="flex"
-          gap="24px"
-          //   border="2px solid red"
-          width="90%"
-          margin="24px"
-          marginBottom="0px"
-        >
+    <div className="h-screen w-screen flex">
+      {/* Sidebar */}
+      <div className="h-full w-72 bg-green-900 text-white p-6 flex flex-col">
+        <h1 className="text-4xl text-center mb-8">Portfolio Holdings</h1>
+        <div className="flex-1"></div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 h-full flex flex-col p-6">
+        {/* Search Section */}
+        <div className="flex gap-6 mb-4 w-full">
           <input
             type="text"
             value={input}
-            style={{
-              width: "100%",
-              padding: "16px",
-              fontSize: "24px",
-              border: "none",
-              borderRadius: "8px",
-              boxShadow: "0px 0px 5px 0px",
-            }}
+            className="flex-grow p-4 text-lg border-none rounded-lg shadow"
             placeholder="Type the name of a company..."
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key == "Enter") {
+              if (e.key === "Enter") {
                 setDisplayedStock(input);
                 updateMatches();
                 clear();
               }
             }}
           />
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: "#023020", borderRadius: "8px" }}
-            className="custom-font"
+          <button
             onClick={() => {
               setDisplayedStock(input);
               clear();
             }}
+            className="bg-green-900 text-white px-6 py-4 rounded-lg"
           >
             Search
-          </Button>
-          {input && matches.length > 0 ? (
-            <ul
-              style={{
-                position: "absolute",
-                top: 100,
-                width: "50%",
-                borderRadius: "8px",
-                height: "300px",
-                overflowY: "scroll",
-                backgroundColor: "white",
-                boxShadow: "0px 0px 5px 0px",
-              }}
-              className="scrollbar"
-            >
-              {matches.map((match) => {
-                return (
-                  <li
-                    key={match.symbol}
-                    style={{
-                      cursor: "pointer",
-                      padding: "24px",
-                      margin: "12px",
-                      display: "flex",
-                      borderRadius: "8px",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                    className="hover:bg-green-200"
-                  >
-                    <span>{match.symbol}</span>
-                    <span>{match.description}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : null}
-        </Box>
+          </button>
+        </div>
+
+        {/* Search Results */}
+        {input && matches.length > 0 ? (
+          <ul className="absolute top-24 w-1/2 bg-white rounded-lg shadow overflow-y-auto max-h-64">
+            {matches.map((match) => (
+              <li
+                key={match.symbol}
+                className="cursor-pointer p-4 hover:bg-green-200 flex justify-between"
+                onClick={() => setDisplayedStock(match.symbol)}
+              >
+                <span>{match.symbol}</span>
+                <span>{match.description}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {/* Stock Interface */}
         {displayedStock ? (
           <StockInterface
             stockName={displayedStock}
@@ -143,33 +80,13 @@ export default function Dashboard() {
             chartData={mockHistoricalData}
           />
         ) : (
-          <Box
-            border="none"
-            borderRadius="24px"
-            boxShadow="0px 0px 10px 0px"
-            minWidth="300px"
-            width="90%"
-            flex="1"
-            margin="24px"
-            padding="16px"
-            display="flex"
-            flexDirection="column"
-            gap="16px"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Typography
-              variant="h3"
-              color="rgba(0,0,0,.7)"
-              textAlign="center"
-              maxWidth="50%"
-              className="custom-font"
-            >
+          <div className="flex flex-col items-center justify-center flex-1 w-full p-6 rounded-lg shadow bg-white">
+            <h2 className="text-3xl text-gray-700 text-center">
               Sorry... we don&apos;t know that one. Please search for a stock!
-            </Typography>
-          </Box>
+            </h2>
+          </div>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
